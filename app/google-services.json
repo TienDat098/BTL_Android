@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "727976188835",
+    "firebase_url": "https://quizzapp-b8d7e-default-rtdb.firebaseio.com",
+    "project_id": "quizzapp-b8d7e",
+    "storage_bucket": "quizzapp-b8d7e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:727976188835:android:505851bdcfc93996529816",
+        "android_client_info": {
+          "package_name": "ntd.ntu.btl_64130297_quizz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjnHGq9NwANzHFYjEBFnGEjMFhaEA5mNA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

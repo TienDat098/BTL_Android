@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_black">#FF000000</color>
+    <color name="color_white">#FFFFFFFF</color>
+    <color name="color_orange_primary">#EE8B60</color>
+
+    <color name="bg_header">#FBDAB1</color>
+    <color name="bg_main">#B5FFFC</color>
+
+    <color name="text_grey">#607D8B</color> <!-- mau_hello -->
+
+    <!-- Màu phối khác -->
+    <color name="color_green_light">#B4F8C8</color>
+    <color name="color_teal_light">#A0E7E5</color>
+    <color name="color_pink">#FFAEBC</color>
+    <color name="color_beige">#FBE7C6</color>
+
+    <color name="text_green">#18B74B</color>
+    <color name="text_teal">#1BA7A6</color>
+    <color name="text_red">#BE3E53</color>
+    <color name="text_gold">#EDC463</color>
+    <color name="text_triangle">#1BA7A6</color>
+
+</resources>
