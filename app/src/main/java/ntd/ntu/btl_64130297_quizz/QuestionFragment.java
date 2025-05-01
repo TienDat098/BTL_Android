@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ public class QuestionFragment extends Fragment {
     private TextView tvHello, tvTimer, tvQuestion;
     private RadioGroup rgAnswers;
     private RadioButton rbA, rbB, rbC, rbD;
+    private ProgressBar progressBar;
     private Button btnSubmit;
     private ImageView imgQuestion;
     private List<Question> questionList;
@@ -59,6 +61,7 @@ public class QuestionFragment extends Fragment {
         rbC = view.findViewById(R.id.rb_c);
         rbD = view.findViewById(R.id.rb_d);
         btnSubmit = view.findViewById(R.id.btn_submit);
+        progressBar = view.findViewById(R.id.progress_bar);
 
         String userName = "User";
         if (getArguments() != null) {
@@ -86,19 +89,22 @@ public class QuestionFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 questionList.clear(); // Xóa danh sách cũ để tránh trùng lặp
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
                     Question question = snapshot.getValue(Question.class);
                     if (question != null) {
                         // Lấy tên ảnh từ image_MinhHoa (là tên string như "anhcau1")
                         int imageResId = getResources().getIdentifier(
                                 question.getImage_MinhHoa(), "mipmap", requireContext().getPackageName());
-
+                        if (imageResId == 0) {
+                            Log.w("ImageNotFound", "Hình ảnh không tìm thấy: " + question.getImage_MinhHoa());
+                        }
                         // Nếu không tìm thấy thì dùng ảnh mặc định
                         question.setImage_MinhHoaId(imageResId != 0 ? imageResId : R.mipmap.ic_launcher);
                         questionList.add(question);
                         Log.d("FirebaseQuestion", "Loaded: " + question.getQuestion());
                     }
                 }
+
+                progressBar.setVisibility(View.GONE);
 
                 // Kiểm tra nếu danh sách rỗng
                 if (questionList.isEmpty()) {
@@ -120,6 +126,7 @@ public class QuestionFragment extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("FirebaseError", "Lỗi khi đọc dữ liệu: " + databaseError.getMessage());
+                progressBar.setVisibility(View.GONE);
                 new AlertDialog.Builder(getContext())
                         .setTitle("Lỗi")
                         .setMessage("Không thể tải câu hỏi từ Firebase: " + databaseError.getMessage())
