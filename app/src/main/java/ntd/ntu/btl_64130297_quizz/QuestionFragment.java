@@ -30,7 +30,6 @@ import java.util.List;
 
 
 public class QuestionFragment extends Fragment {
-
     private TextView tvHello, tvTimer, tvQuestion;
     private RadioGroup rgAnswers;
     private RadioButton rbA, rbB, rbC, rbD;
@@ -41,8 +40,6 @@ public class QuestionFragment extends Fragment {
     private int currentQuestionIndex = 0;
     private int score = 0;
     private CountDownTimer countDownTimer;
-
-
     public QuestionFragment() {
 
     }
@@ -71,16 +68,11 @@ public class QuestionFragment extends Fragment {
 
         questionList = new ArrayList<>();
         loadQuestions(); // Tải dữ liệu từ Firebase
-
-
         btnSubmit.setOnClickListener(v -> submitAnswer());
-
         return view;
-
     }
     private void loadQuestions() {
         questionList = new ArrayList<>();
-
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Questions");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -102,7 +94,6 @@ public class QuestionFragment extends Fragment {
                     }
                 }
                 progressBar.setVisibility(View.GONE);
-
                 // Kiểm tra nếu danh sách rỗng
                 if (questionList.isEmpty()) {
                     new AlertDialog.Builder(getContext())
@@ -133,12 +124,9 @@ public class QuestionFragment extends Fragment {
                         })
                         .setCancelable(false)
                         .show();
-
             }
         });
-
     }
-
     private void showQuestion() {
         if (currentQuestionIndex < questionList.size()) {
             Question q = questionList.get(currentQuestionIndex);
@@ -149,7 +137,6 @@ public class QuestionFragment extends Fragment {
             rbD.setText("D. " + q.getOptionD());
             rgAnswers.clearCheck();
             imgQuestion.setImageResource(q.getImage_MinhHoaId());
-
             // Đặt lại màu nền về mặc định cho các RadioButton
             rbA.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             rbB.setBackgroundColor(getResources().getColor(android.R.color.transparent));
@@ -158,12 +145,10 @@ public class QuestionFragment extends Fragment {
             startTimer();
         }
     }
-
     private void submitAnswer() {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-
         // Kiểm tra xem người dùng đã chọn đáp án chưa
         if (rgAnswers.getCheckedRadioButtonId() == -1) {
             new AlertDialog.Builder(getContext())
@@ -172,10 +157,8 @@ public class QuestionFragment extends Fragment {
                     .show();
             return;
         }
-
         String selectedAnswer = "";
         RadioButton selectedRadioButton = null;
-
         if (rbA.isChecked()) {
             selectedAnswer = "A";
             selectedRadioButton = rbA;
@@ -189,7 +172,6 @@ public class QuestionFragment extends Fragment {
             selectedAnswer = "D";
             selectedRadioButton = rbD;
         }
-
         // Kiểm tra đáp án đúng hay sai
         boolean isCorrect = selectedAnswer.equals(questionList.get(currentQuestionIndex).getAnswer());
         if (isCorrect) {
@@ -198,18 +180,15 @@ public class QuestionFragment extends Fragment {
         } else {
             selectedRadioButton.setBackgroundColor(getResources().getColor(R.color.text_red)); // Màu đỏ
         }
-
         // Vô hiệu hóa RadioGroup và nút Submit để người dùng không thay đổi đáp án
         rgAnswers.setEnabled(false);
         for (int i = 0; i < rgAnswers.getChildCount(); i++) {
             rgAnswers.getChildAt(i).setEnabled(false);
         }
         btnSubmit.setEnabled(false);
-
         // Chuyển sang câu hỏi tiếp theo hoặc hiển thị kết quả sau 1 giây
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             currentQuestionIndex++;
-
             if (currentQuestionIndex < questionList.size()) {
                 showQuestion();
                 // Kích hoạt lại RadioGroup và nút Submit cho câu hỏi tiếp theo
@@ -234,7 +213,6 @@ public class QuestionFragment extends Fragment {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-
         countDownTimer = new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -249,6 +227,4 @@ public class QuestionFragment extends Fragment {
         };
         countDownTimer.start();
     }
-
-
 }
