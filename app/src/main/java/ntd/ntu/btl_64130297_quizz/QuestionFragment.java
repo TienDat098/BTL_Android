@@ -50,7 +50,7 @@ public class QuestionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_question, container, false);
-
+        // tim dk
         tvHello = view.findViewById(R.id.tv_hello);
         tvTimer = view.findViewById(R.id.tv_timer);
         tvQuestion = view.findViewById(R.id.tv_question);
@@ -81,9 +81,7 @@ public class QuestionFragment extends Fragment {
     private void loadQuestions() {
         questionList = new ArrayList<>();
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance()
-                .getReference("Questions");
-
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Questions");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -103,7 +101,6 @@ public class QuestionFragment extends Fragment {
                         Log.d("FirebaseQuestion", "Loaded: " + question.getQuestion());
                     }
                 }
-
                 progressBar.setVisibility(View.GONE);
 
                 // Kiểm tra nếu danh sách rỗng
@@ -246,6 +243,7 @@ public class QuestionFragment extends Fragment {
 
             @Override
             public void onFinish() {
+                //xử lý hết giờ
                 submitAnswer();
             }
         };

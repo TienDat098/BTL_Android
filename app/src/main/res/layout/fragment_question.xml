@@ -18,7 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
-    <!-- Xin chào tên người dùng -->
 
     <TextView
         android:id="@+id/tv_hello"
@@ -33,7 +32,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"/>
 
-    <!-- Đồng hồ đếm ngược -->
     <TextView
         android:id="@+id/tv_timer"
         android:layout_width="wrap_content"
@@ -46,7 +44,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="8dp"/>
 
-    <!-- Câu hỏi -->
     <TextView
         android:id="@+id/tv_question"
         android:layout_width="0dp"
@@ -61,8 +58,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-
-    <!-- Hình ảnh cho câu hỏi -->
     <ImageView
         android:id="@+id/img_question"
         android:layout_width="0dp"
@@ -75,8 +70,6 @@
         android:layout_marginTop="8dp"
         android:contentDescription="Hình câu hỏi" />
 
-
-    <!-- CardView chứa đáp án -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewAnswers"
         android:layout_width="0dp"
@@ -131,7 +124,6 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!-- Nút trả lời -->
     <Button
         android:id="@+id/btn_submit"
         android:layout_width="139dp"
