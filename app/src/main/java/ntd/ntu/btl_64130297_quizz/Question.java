@@ -10,7 +10,6 @@ public class Question {
     private String image_MinhHoa;
     private int image_MinhHoaId;
 
-
     public Question() {
     }
     public Question(String question, String optionA, String optionB, String optionC, String optionD, String answer, String image_MinhHoa, int image_MinhHoaId) {

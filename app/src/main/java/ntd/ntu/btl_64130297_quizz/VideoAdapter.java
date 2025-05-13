@@ -1,5 +1,4 @@
 package ntd.ntu.btl_64130297_quizz;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -43,14 +42,11 @@ public class VideoAdapter  extends RecyclerView.Adapter<VideoAdapter.VideoViewHo
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
-
     }
-
     @Override
     public int getItemCount() {
         return videoList.size();
     }
-
     public static class VideoViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvMoTa;
         ImageView imgVideo;

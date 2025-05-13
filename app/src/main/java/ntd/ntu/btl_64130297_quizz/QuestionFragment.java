@@ -37,7 +37,7 @@ public class QuestionFragment extends Fragment {
     private Button btnSubmit;
     private ImageView imgQuestion;
     private List<Question> questionList;
-    private int currentQuestionIndex = 0;
+    private int QuestionIndex = 0;
     private int score = 0;
     private CountDownTimer countDownTimer;
     public QuestionFragment() {
@@ -106,7 +106,6 @@ public class QuestionFragment extends Fragment {
                             .setCancelable(false)
                             .show();
                 } else {
-                    // Chỉ gọi showQuestion() khi đã có dữ liệu
                     showQuestion();
                 }
             }
@@ -128,8 +127,8 @@ public class QuestionFragment extends Fragment {
         });
     }
     private void showQuestion() {
-        if (currentQuestionIndex < questionList.size()) {
-            Question q = questionList.get(currentQuestionIndex);
+        if (QuestionIndex < questionList.size()) {
+            Question q = questionList.get(QuestionIndex);
             tvQuestion.setText(q.getQuestion());
             rbA.setText("A. " + q.getOptionA());
             rbB.setText("B. " + q.getOptionB());
@@ -173,7 +172,7 @@ public class QuestionFragment extends Fragment {
             selectedRadioButton = rbD;
         }
         // Kiểm tra đáp án đúng hay sai
-        boolean isCorrect = selectedAnswer.equals(questionList.get(currentQuestionIndex).getAnswer());
+        boolean isCorrect = selectedAnswer.equals(questionList.get(QuestionIndex).getAnswer());
         if (isCorrect) {
             score++;
             selectedRadioButton.setBackgroundColor(getResources().getColor(R.color.text_green)); // Màu xanh
@@ -188,8 +187,8 @@ public class QuestionFragment extends Fragment {
         btnSubmit.setEnabled(false);
         // Chuyển sang câu hỏi tiếp theo hoặc hiển thị kết quả sau 1 giây
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questionList.size()) {
+            QuestionIndex++;
+            if (QuestionIndex < questionList.size()) {
                 showQuestion();
                 // Kích hoạt lại RadioGroup và nút Submit cho câu hỏi tiếp theo
                 rgAnswers.setEnabled(true);
