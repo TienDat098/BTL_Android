@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
 public class HomeFragment extends Fragment {
     EditText edtName;
     Button btnStart;
@@ -21,26 +20,31 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        // tìm đk
+
+        // timdk
         edtName = view.findViewById(R.id.edt_name);
         btnStart = view.findViewById(R.id.btn_start);
-        //lang nghe
-        btnStart.setOnClickListener(v -> {
-            String name = edtName.getText().toString().trim();
-            if (name.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng nhập tên!", Toast.LENGTH_SHORT).show();
-            } else {
-                // Chuyển sang QuestionFragment và gửi tên
-                Bundle bundle = new Bundle();
-                bundle.putString("user_name", name);
 
-                QuestionFragment questionFragment = new QuestionFragment();
-                questionFragment.setArguments(bundle);
+        // Lắng nghe sự kiện click
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = edtName.getText().toString().trim();
+                if (name.isEmpty()) {
+                    Toast.makeText(getContext(), "Vui lòng nhập tên!", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Chuyển sang QuestionFragment và gửi tên
+                    Bundle bundle = new Bundle();
+                    bundle.putString("user_name", name);
 
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_main, questionFragment); // id Layout cha chứa Fragment
-                transaction.addToBackStack(null);
-                transaction.commit();
+                    QuestionFragment questionFragment = new QuestionFragment();
+                    questionFragment.setArguments(bundle);
+
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_main, questionFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
             }
         });
 
