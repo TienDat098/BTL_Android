@@ -72,112 +72,109 @@ public class QuestionFragment extends Fragment {
         return view;
     }
     private void loadQuestions() {
+        // Khởi tạo danh sách câu hỏi mới
         questionList = new ArrayList<>();
+        // Tham chiếu đến node "Questions" trong Firebase
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Questions");
+        // Đọc dữ liệu 1 lần từ Firebase (không lắng nghe thay đổi liên tục)
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                questionList.clear(); // Xóa danh sách cũ để tránh trùng lặp
+                // Xóa danh sách cũ để tránh trùng lặp
+                questionList.clear();
+                // Duyệt qua từng câu hỏi trong dữ liệu Firebase
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Lấy dữ liệu từng câu hỏi và chuyển thành đối tượng Question
                     Question question = snapshot.getValue(Question.class);
-                    if (question != null) {
-                        // Lấy tên ảnh từ image_MinhHoa (là tên string như "anhcau1")
-                        int imageResId = getResources().getIdentifier(
-                                question.getImage_MinhHoa(), "mipmap", requireContext().getPackageName());
-                        if (imageResId == 0) {
-                            Log.w("ImageNotFound", "Hình ảnh không tìm thấy: " + question.getImage_MinhHoa());
-                        }
-                        // Nếu không tìm thấy thì dùng ảnh mặc định
-                        question.setImage_MinhHoaId(imageResId != 0 ? imageResId : R.mipmap.ic_launcher);
-                        questionList.add(question);
-                        Log.d("FirebaseQuestion", "Loaded: " + question.getQuestion());
-                    }
+                    // Lấy ID ảnh minh họa từ tên ảnh lưu trong Firebase (dạng String như "anhcau1")
+                    int imageResId = getResources().getIdentifier(question.getImage_MinhHoa(),    // Tên ảnh
+                            "mipmap",                      // Tìm trong thư mục mipmap
+                            requireContext().getPackageName() // Lấy package hiện tại của app
+                    );
+                    // Gán ID ảnh vào thuộc tính image_MinhHoaId của đối tượng Question
+                    // Nếu không tìm thấy ảnh, sử dụng ảnh mặc định ic_launcher
+                    question.setImage_MinhHoaId(imageResId != 0 ? imageResId : R.mipmap.ic_launcher);
+                    // Thêm câu hỏi vào danh sách
+                    questionList.add(question);
                 }
+                // Ẩn ProgressBar sau khi load xong dữ liệu
                 progressBar.setVisibility(View.GONE);
-                // Kiểm tra nếu danh sách rỗng
-                if (questionList.isEmpty()) {
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("Lỗi")
-                            .setMessage("Không tải được câu hỏi từ Firebase. Vui lòng kiểm tra kết nối hoặc dữ liệu!")
-                            .setPositiveButton("OK", (dialog, which) -> {
-                                // Quay lại HomeFragment hoặc thoát
-                                getParentFragmentManager().popBackStack();
-                            })
-                            .setCancelable(false)
-                            .show();
-                } else {
-                    showQuestion();
-                }
+                // Hiển thị câu hỏi đầu tiên lên giao diện
+                showQuestion();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e("FirebaseError", "Lỗi khi đọc dữ liệu: " + databaseError.getMessage());
+                // Ẩn ProgressBar khi có lỗi kết nối Firebase
                 progressBar.setVisibility(View.GONE);
-                new AlertDialog.Builder(getContext())
-                        .setTitle("Lỗi")
-                        .setMessage("Không thể tải câu hỏi từ Firebase: " + databaseError.getMessage())
-                        .setPositiveButton("OK", (dialog, which) -> {
-                            // Quay lại HomeFragment hoặc thoát
-                            getParentFragmentManager().popBackStack();
-                        })
-                        .setCancelable(false)
-                        .show();
             }
         });
     }
     private void showQuestion() {
+        // Kiểm tra còn câu hỏi nào chưa hiển thị
         if (QuestionIndex < questionList.size()) {
+            // Lấy câu hỏi hiện tại dựa vào chỉ số
             Question q = questionList.get(QuestionIndex);
+            // Hiển thị nội dung câu hỏi
             tvQuestion.setText(q.getQuestion());
+            // Hiển thị các lựa chọn đáp án
             rbA.setText("A. " + q.getOptionA());
             rbB.setText("B. " + q.getOptionB());
             rbC.setText("C. " + q.getOptionC());
             rbD.setText("D. " + q.getOptionD());
+            // Xóa lựa chọn cũ nếu có
             rgAnswers.clearCheck();
+            // Hiển thị hình minh họa cho câu hỏi
             imgQuestion.setImageResource(q.getImage_MinhHoaId());
-            // Đặt lại màu nền về mặc định cho các RadioButton
+            // Đặt lại màu nền về mặc định cho tất cả các RadioButton (tránh màu của câu trước)
             rbA.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             rbB.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             rbC.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             rbD.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            // Bắt đầu đếm ngược thời gian cho câu hỏi
             startTimer();
         }
     }
+    // Hàm xử lý khi người dùng nhấn nút "Trả lời"
     private void submitAnswer() {
+        // Hủy đếm ngược nếu người dùng tự nộp bài
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-        // Kiểm tra xem người dùng đã chọn đáp án chưa
+        // Kiểm tra người dùng đã chọn đáp án hay chưa
         if (rgAnswers.getCheckedRadioButtonId() == -1) {
+            // Nếu chưa chọn, thông báo yêu cầu chọn
             new AlertDialog.Builder(getContext())
-                    .setMessage("Vui lòng chọn một đáp án trước khi trả lời!")
-                    .setPositiveButton("OK", null)
+                    .setTitle("Kết thúc")
+                    .setMessage("Bạn đúng " + score + "/" + questionList.size() + " câu.\nChúc mừng!")
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        // Reset lại chỉ số và điểm
+                        QuestionIndex = 0;
+                        score = 0;
+
+                        // Quay về màn hình chính
+                        getParentFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_main, new HomeFragment())
+                                .commit();
+                    })
+                    .setCancelable(false)
                     .show();
-            return;
+
         }
         String selectedAnswer = "";
         RadioButton selectedRadioButton = null;
-        if (rbA.isChecked()) {
-            selectedAnswer = "A";
-            selectedRadioButton = rbA;
-        } else if (rbB.isChecked()) {
-            selectedAnswer = "B";
-            selectedRadioButton = rbB;
-        } else if (rbC.isChecked()) {
-            selectedAnswer = "C";
-            selectedRadioButton = rbC;
-        } else if (rbD.isChecked()) {
-            selectedAnswer = "D";
-            selectedRadioButton = rbD;
-        }
-        // Kiểm tra đáp án đúng hay sai
+        // Xác định đáp án người dùng đã chọn
+        if (rbA.isChecked()) { selectedAnswer = "A"; selectedRadioButton = rbA; }
+        else if (rbB.isChecked()) { selectedAnswer = "B"; selectedRadioButton = rbB; }
+        else if (rbC.isChecked()) { selectedAnswer = "C"; selectedRadioButton = rbC; }
+        else if (rbD.isChecked()) { selectedAnswer = "D"; selectedRadioButton = rbD; }
+        // Kiểm tra đáp án có đúng hay không
         boolean isCorrect = selectedAnswer.equals(questionList.get(QuestionIndex).getAnswer());
         if (isCorrect) {
-            score++;
-            selectedRadioButton.setBackgroundColor(getResources().getColor(R.color.text_green)); // Màu xanh
+            score++; // Tăng điểm nếu đúng
+            selectedRadioButton.setBackgroundColor(getResources().getColor(R.color.text_green)); // Hiển thị màu xanh
         } else {
-            selectedRadioButton.setBackgroundColor(getResources().getColor(R.color.text_red)); // Màu đỏ
+            selectedRadioButton.setBackgroundColor(getResources().getColor(R.color.text_red)); // Hiển thị màu đỏ
         }
         // Vô hiệu hóa RadioGroup và nút Submit để người dùng không thay đổi đáp án
         rgAnswers.setEnabled(false);
@@ -185,45 +182,50 @@ public class QuestionFragment extends Fragment {
             rgAnswers.getChildAt(i).setEnabled(false);
         }
         btnSubmit.setEnabled(false);
-        // Chuyển sang câu hỏi tiếp theo hoặc hiển thị kết quả sau 1 giây
+        // Sau 1 giây, chuyển sang câu hỏi tiếp theo hoặc kết thúc bài quiz
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             QuestionIndex++;
             if (QuestionIndex < questionList.size()) {
-                showQuestion();
-                // Kích hoạt lại RadioGroup và nút Submit cho câu hỏi tiếp theo
+                showQuestion(); // Hiển thị câu hỏi tiếp theo
+                // Kích hoạt lại các lựa chọn và nút Submit
                 rgAnswers.setEnabled(true);
                 for (int i = 0; i < rgAnswers.getChildCount(); i++) {
                     rgAnswers.getChildAt(i).setEnabled(true);
                 }
                 btnSubmit.setEnabled(true);
             } else {
+                // Thông báo kết quả cuối cùng
                 new AlertDialog.Builder(getContext())
                         .setTitle("Kết thúc")
                         .setMessage("Bạn đúng " + score + "/" + questionList.size() + " câu.\nChúc mừng!")
                         .setPositiveButton("OK", (dialog, which) -> {
-                            // Có thể reset lại Quiz ở đây nếu muốn
+                            // Có thể thêm chức năng reset quiz ở đây nếu muốn
                         })
                         .show();
             }
-        }, 1000); // Đợi 1 giây trước khi chuyển câu hỏi
+        }, 1000); // Đợi 1 giây
     }
 
     private void startTimer() {
+        // Hủy bộ đếm cũ nếu có
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
+        // Tạo mới CountDownTimer 30 giây (đếm lùi từng giây)
         countDownTimer = new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+                // Cập nhật số giây còn lại lên TextView
                 tvTimer.setText(millisUntilFinished / 1000 + "s");
             }
-
             @Override
             public void onFinish() {
-                //xử lý hết giờ
+                // Khi hết giờ, tự động gọi submitAnswer()
                 submitAnswer();
             }
         };
+        // Bắt đầu đếm ngược
         countDownTimer.start();
     }
+
 }

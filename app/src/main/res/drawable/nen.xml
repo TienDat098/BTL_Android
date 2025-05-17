@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Nền gradient bóng -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="45"
+                android:startColor="#B5FFFC"
+                android:endColor="#7ED8D6"
+                android:centerColor="#A0F0EE"
+                android:type="linear" />
+        </shape>
+    </item>
+
+    <!-- Hiệu ứng bóng phản chiếu -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="45"
+                android:startColor="#FFFFFF"
+                android:endColor="#B5FFFC"
+                android:type="linear" />
+            <corners android:radius="16dp"/>
+        </shape>
+    </item>
+
+</layer-list>
