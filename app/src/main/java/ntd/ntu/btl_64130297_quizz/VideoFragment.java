@@ -34,7 +34,6 @@ public class VideoFragment extends Fragment {
         videoList.add(new VideoItem("Phong trào Đồng Khởi 1960", "https://youtu.be/qlUTb3Ain5A?si=-fjfE94zvnt2NbkD",R.mipmap.dongkhoi));
         videoList.add(new VideoItem("Ký kết Hiệp định Paris 1973", "https://youtu.be/rpwNyHuoPwU?si=91a_ccrRPK6xuOR5",R.mipmap.hiepdinh));
         videoList.add(new VideoItem("Giải phóng miền Nam 30/4/1975", "https://youtu.be/bDkJJjmmDxE?si=4PGp_a7q4Tv0StIN",R.mipmap.giaiphong));
-
         VideoAdapter adapter = new VideoAdapter(getContext(), videoList);
         recyclerView.setAdapter(adapter);
 

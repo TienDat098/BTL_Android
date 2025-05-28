@@ -96,6 +96,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/text_red"
                 android:text="A. Đáp án A"
+                android:textColor="@color/color_black"
                 android:textSize="18sp" />
 
             <RadioButton
@@ -104,6 +105,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/text_red"
                 android:text="B. Đáp án B"
+                android:textColor="@color/color_black"
                 android:textSize="18sp" />
 
             <RadioButton
@@ -111,6 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/text_red"
+                android:textColor="@color/color_black"
                 android:text="C. Đáp án C"
                 android:textSize="18sp" />
 
@@ -118,6 +121,7 @@
                 android:id="@+id/rb_d"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/color_black"
                 android:buttonTint="@color/text_red"
                 android:text="D. Đáp án D"
                 android:textSize="18sp" />

@@ -68,7 +68,13 @@ public class QuestionFragment extends Fragment {
 
         questionList = new ArrayList<>();
         loadQuestions(); // Tải dữ liệu từ Firebase
-        btnSubmit.setOnClickListener(v -> submitAnswer());
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitAnswer();
+            }
+        });
+
         return view;
     }
     private void loadQuestions() {
@@ -82,24 +88,21 @@ public class QuestionFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Xóa danh sách cũ để tránh trùng lặp
                 questionList.clear();
-                // Duyệt qua từng câu hỏi trong dữ liệu Firebase
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     // Lấy dữ liệu từng câu hỏi và chuyển thành đối tượng Question
                     Question question = snapshot.getValue(Question.class);
                     // Lấy ID ảnh minh họa từ tên ảnh lưu trong Firebase (dạng String như "anhcau1")
-                    int imageResId = getResources().getIdentifier(question.getImage_MinhHoa(),    // Tên ảnh
-                            "mipmap",                      // Tìm trong thư mục mipmap
-                            requireContext().getPackageName() // Lấy package hiện tại của app
+                    int imageResId = getResources().getIdentifier(question.getImage_MinhHoa(),
+                            "mipmap",
+                            requireContext().getPackageName()
                     );
                     // Gán ID ảnh vào thuộc tính image_MinhHoaId của đối tượng Question
                     // Nếu không tìm thấy ảnh, sử dụng ảnh mặc định ic_launcher
                     question.setImage_MinhHoaId(imageResId != 0 ? imageResId : R.mipmap.ic_launcher);
-                    // Thêm câu hỏi vào danh sách
                     questionList.add(question);
                 }
                 // Ẩn ProgressBar sau khi load xong dữ liệu
                 progressBar.setVisibility(View.GONE);
-                // Hiển thị câu hỏi đầu tiên lên giao diện
                 showQuestion();
             }
             @Override
@@ -110,11 +113,8 @@ public class QuestionFragment extends Fragment {
         });
     }
     private void showQuestion() {
-        // Kiểm tra còn câu hỏi nào chưa hiển thị
         if (QuestionIndex < questionList.size()) {
-            // Lấy câu hỏi hiện tại dựa vào chỉ số
             Question q = questionList.get(QuestionIndex);
-            // Hiển thị nội dung câu hỏi
             tvQuestion.setText(q.getQuestion());
             // Hiển thị các lựa chọn đáp án
             rbA.setText("A. " + q.getOptionA());
@@ -123,18 +123,15 @@ public class QuestionFragment extends Fragment {
             rbD.setText("D. " + q.getOptionD());
             // Xóa lựa chọn cũ nếu có
             rgAnswers.clearCheck();
-            // Hiển thị hình minh họa cho câu hỏi
             imgQuestion.setImageResource(q.getImage_MinhHoaId());
             // Đặt lại màu nền về mặc định cho tất cả các RadioButton (tránh màu của câu trước)
             rbA.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             rbB.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             rbC.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             rbD.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            // Bắt đầu đếm ngược thời gian cho câu hỏi
             startTimer();
         }
     }
-    // Hàm xử lý khi người dùng nhấn nút "Trả lời"
     private void submitAnswer() {
         // Hủy đếm ngược nếu người dùng tự nộp bài
         if (countDownTimer != null) {
@@ -147,15 +144,7 @@ public class QuestionFragment extends Fragment {
                     .setTitle("Kết thúc")
                     .setMessage("Bạn đúng " + score + "/" + questionList.size() + " câu.\nChúc mừng!")
                     .setPositiveButton("OK", (dialog, which) -> {
-                        // Reset lại chỉ số và điểm
-                        QuestionIndex = 0;
-                        score = 0;
 
-                        // Quay về màn hình chính
-                        getParentFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fragment_main, new HomeFragment())
-                                .commit();
                     })
                     .setCancelable(false)
                     .show();
@@ -186,7 +175,7 @@ public class QuestionFragment extends Fragment {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             QuestionIndex++;
             if (QuestionIndex < questionList.size()) {
-                showQuestion(); // Hiển thị câu hỏi tiếp theo
+                showQuestion();
                 // Kích hoạt lại các lựa chọn và nút Submit
                 rgAnswers.setEnabled(true);
                 for (int i = 0; i < rgAnswers.getChildCount(); i++) {
@@ -199,7 +188,14 @@ public class QuestionFragment extends Fragment {
                         .setTitle("Kết thúc")
                         .setMessage("Bạn đúng " + score + "/" + questionList.size() + " câu.\nChúc mừng!")
                         .setPositiveButton("OK", (dialog, which) -> {
-                            // Có thể thêm chức năng reset quiz ở đây nếu muốn
+                            // Reset lại chỉ số và điểm
+                            QuestionIndex = 0;
+                            score = 0;
+                            // Quay về màn hình chính
+                            getParentFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.fragment_main, new HomeFragment())
+                                    .commit();
                         })
                         .show();
             }
@@ -220,12 +216,9 @@ public class QuestionFragment extends Fragment {
             }
             @Override
             public void onFinish() {
-                // Khi hết giờ, tự động gọi submitAnswer()
                 submitAnswer();
             }
         };
-        // Bắt đầu đếm ngược
         countDownTimer.start();
     }
-
 }
